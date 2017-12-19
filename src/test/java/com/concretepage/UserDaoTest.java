@@ -85,7 +85,7 @@ public class UserDaoTest {
   }
 
   @Test
-  public void findByUsernameame_CheckFindByUsername_ReturnsTrue(){
+  public void findByUsername_CheckFindByUsername_ReturnsTrue(){
     User user1 = userDao.findByUsername(user.getUsername());
     assertEquals(user1.getUsername(),user.getUsername());
     assertEquals(user1.getFirstname(),user.getFirstname());

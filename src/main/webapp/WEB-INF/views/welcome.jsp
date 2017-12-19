@@ -12,13 +12,14 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Welcome</title>
+    <title>Расчетная</title>
 
     <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
     <link href="${contextPath}/resources/css/common.css" rel="stylesheet">
 </head>
 <body>
-
+<%@page pageEncoding="UTF-8"%>
+<%request.setCharacterEncoding("UTF-8");%>
 <div class="container">
 
     <c:if test="${pageContext.request.userPrincipal.name != null}">
@@ -35,7 +36,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="<c:url value='/welcome' />">Profile</a>
+                    <a class="navbar-brand" href="<c:url value='/welcome' />">Профиль</a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -43,22 +44,22 @@
                     <ul class="nav navbar-nav">
                     </ul>
                     <form class="nav navbar-nav navbar-centr">
-                        <li><a href="<c:url value='/welcome' />">Welcome ${pageContext.request.userPrincipal.name}</a></li>
+                        <li><a href="<c:url value='/welcome' />">Приветсвуем ${pageContext.request.userPrincipal.name}</a></li>
                         <c:forEach var="role" items="${user.roles}">
                             <c:if test="${role.id == 1}">
-                                <li><a href="<c:url value='/statistics' />">Statistics</a></li>
+                                <li><a href="<c:url value='/statistics' />">Статистика профессий</a></li>
                             </c:if>
                         </c:forEach>
                         <c:forEach var="role" items="${user.roles}">
                             <c:if test="${role.id == 2}">
-                                <li><a href="<c:url value='/change' />">Statistics</a></li>
+                                <li><a href="<c:url value='/change' />">Настройка профессий</a></li>
                             </c:if>
                         </c:forEach>
                     </form>
                     <ul class="nav navbar-nav navbar-right">
 
                         <li>
-                            <a href="#" onclick="document.forms['logoutForm'].submit()">Logout</a>
+                            <a href="#" onclick="document.forms['logoutForm'].submit()">Выход</a>
                         </li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
@@ -68,24 +69,24 @@
     </c:if>
     <table class = "table" id = "profile">
         <tr>
-            <td><span style="align:right" class="label label-default">login:</span></td>
+            <td><span style="align:right" class="label label-default">Логин:</span></td>
             <td></h>${user.username}</h></td>
         </tr>
         <tr>
-            <td><span style="align:right" class="label label-default">first name:</span></td>
+            <td><span style="align:right" class="label label-default">Имя:</span></td>
             <td><h>${user.firstname}</h></td>
         </tr>
         <tr>
-            <td><span style="align:right" class="label label-default">surname:</span></td>
+            <td><span style="align:right" class="label label-default">Фамилия:</span></td>
             <td><h>${user.lastname}</h></td>
         </tr>
         <c:if test="${user.profession != null}">
         <tr>
-            <td><span style="align:right" class="label label-default">profession:</span></td>
+            <td><span style="align:right" class="label label-default">Профессия:</span></td>
             <td><h>${user.profession.name}</h></td>
         </tr>
         <tr>
-            <td><span style="align:right" class="label label-default">fee:</span></td>
+            <td><span style="align:right" class="label label-default">Заработная плата:</span></td>
             <td><h>${user.profession.fee}</h></td>
         </tr>
         </c:if>

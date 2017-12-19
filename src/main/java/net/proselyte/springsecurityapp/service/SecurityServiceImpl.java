@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -39,6 +40,37 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    public String findLoggedInUsername(String username, String password){
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+
+        authenticationManager.authenticate(authenticationToken);
+
+        if (authenticationToken.isAuthenticated()) {
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+            logger.debug(String.format("Successfully %s auto logged in", username));
+        }
+
+        Object userDetails2 = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        if (userDetails2 instanceof UserDetails) {
+            return ((UserDetails) userDetails2).getUsername();
+        }
+
+        return null;
+    }
+
+    @Override
+    public String findLoggedInUsername(Authentication Auth) {
+        if (Auth != null) {
+            return Auth.getName();
+        }
+
+        return null;
+    }
+
+    @Override
     public void autoLogin(String username, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -51,5 +83,23 @@ public class SecurityServiceImpl implements SecurityService {
 
             logger.debug(String.format("Successfully %s auto logged in", username));
         }
+    }
+
+    @Override
+    public Authentication autoLogin(String username, Object password) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+
+        authenticationManager.authenticate(authenticationToken);
+
+        if (authenticationToken.isAuthenticated()) {
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+            logger.debug(String.format("Successfully %s auto logged in", username));
+
+            return SecurityContextHolder.getContext().getAuthentication();
+        }
+        return null;
     }
 }

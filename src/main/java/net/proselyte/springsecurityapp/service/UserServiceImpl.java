@@ -44,6 +44,22 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
     }
 
+    public User findByUsernameOrId(String username, long id) {
+        User user = userDao.findByUsername(username);
+        if(user == null) {
+            user = userDao.findOne(id);
+        }
+        return user;
+    }
+
+    public User findByFirstNameOrLastName(String firstname, String lastname) {
+        User user = userDao.findByFirstname(firstname);
+        if(user == null) {
+            user = userDao.findByLastname(lastname);
+        }
+        return user;
+    }
+
     @Override
     public User findByUsername(String username) {
         return userDao.findByUsername(username);

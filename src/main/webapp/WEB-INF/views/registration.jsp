@@ -3,7 +3,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-
+<%@page pageEncoding="UTF-8"%>
+<%request.setCharacterEncoding("UTF-8");%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,10 +30,10 @@
 <div class="container">
 
     <form:form method="POST" modelAttribute="userForm" class="form-signin">
-        <h2 class="form-signin-heading">Create your account</h2>
+        <h2 class="form-signin-heading">Регистрация</h2>
         <spring:bind path="username">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="username" class="form-control" placeholder="Username"
+                <form:input type="text" path="username" class="form-control" placeholder="Логин"
                             autofocus="true"></form:input>
                 <form:errors path="username"></form:errors>
             </div>
@@ -40,7 +41,7 @@
 
         <spring:bind path="lastname">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="lastname" class="form-control" placeholder="Last Name"
+                <form:input type="text" path="lastname" class="form-control" placeholder="Фамилия"
                             autofocus="true"></form:input>
                 <form:errors path="lastname"></form:errors>
             </div>
@@ -48,7 +49,7 @@
 
         <spring:bind path="firstname">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="firstname" class="form-control" placeholder="First Name"
+                <form:input type="text" path="firstname" class="form-control" placeholder="Имя"
                             autofocus="true"></form:input>
                 <form:errors path="firstname"></form:errors>
             </div>
@@ -56,7 +57,7 @@
 
         <spring:bind path="professionname" >
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <label for="exampleFormControlSelect1">Profession</label>
+                <label for="exampleFormControlSelect1">Профессия</label>
                 <form:select class="form-control" id="exampleFormControlSelect1" path="professionname">
 
                     <c:forEach var="profesion" items="${professions}">
@@ -69,7 +70,7 @@
 
         <spring:bind path="password">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="password" path="password" class="form-control" placeholder="Password"></form:input>
+                <form:input type="password" path="password" class="form-control" placeholder="Пароль"></form:input>
                 <form:errors path="password"></form:errors>
             </div>
         </spring:bind>
@@ -77,12 +78,12 @@
         <spring:bind path="confirmPassword">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="password" path="confirmPassword" class="form-control"
-                            placeholder="Confirm your password"></form:input>
+                            placeholder="Подтверждение пароля"></form:input>
                 <form:errors path="confirmPassword"></form:errors>
             </div>
         </spring:bind>
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Регистрация</button>
     </form:form>
 
 </div>

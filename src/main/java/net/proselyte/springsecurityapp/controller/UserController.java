@@ -1,7 +1,9 @@
 package net.proselyte.springsecurityapp.controller;
 
 import jdk.nashorn.internal.ir.RuntimeNode;
+import net.proselyte.springsecurityapp.dao.HistoryProfessionDao;
 import net.proselyte.springsecurityapp.dao.ProfessionDao;
+import net.proselyte.springsecurityapp.model.HistoryProfession;
 import net.proselyte.springsecurityapp.model.Profession;
 import net.proselyte.springsecurityapp.model.User;
 import net.proselyte.springsecurityapp.service.SecurityService;
@@ -19,6 +21,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -43,6 +47,9 @@ public class UserController {
     @Autowired
     private ProfessionDao professionDao;
 
+    @Autowired
+    private HistoryProfessionDao historyProfessionDao;
+
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model) {
         List<Profession> professionList = professionDao.findAll();
@@ -59,6 +66,8 @@ public class UserController {
             userForm.setProfessionname(professionDao.findAll().get(0).getName());
         }
         if (bindingResult.hasErrors()) {
+            List<Profession> professionList = professionDao.findAll();
+            model.addAttribute("professions",professionList);
             return "registration";
         }
         Profession profession = professionDao.findByName(userForm.getProfessionname());
@@ -74,11 +83,11 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Model model, String error, String logout) {
         if (error != null) {
-            model.addAttribute("error", "Username or password is incorrect.");
+            model.addAttribute("error", "Логин или пароль введены не верно.");
         }
 
         if (logout != null) {
-            model.addAttribute("message", "Logged out successfully.");
+            model.addAttribute("message", "Успешный выход.");
         }
 
         return "login";
@@ -102,79 +111,50 @@ public class UserController {
         return "statistics";
     }
 
-    @RequestMapping(value = {"/delete-{id}"}, method = RequestMethod.GET)
-    public String delete(@PathVariable("id") long id, Model model) {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(name);
-        model.addAttribute("user",user);
-        professionDao.delete(id);
-        List<Profession> professions = professionDao.findAll();
-        model.addAttribute("professions",professions);
-        return "changeProfession";
-    }
 
-    @RequestMapping(value = {"/change-{id}"}, method = RequestMethod.GET)
-    public String changeProfession(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
-        String url =  request.getRequestURL().toString() + "?" + request.getQueryString();
-        int index = Integer.parseInt(url.substring(url.indexOf("-")+ 1, url.indexOf("?")));
-        model.addAttribute("index",index);
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(name);
-        model.addAttribute("user",user);
-        Profession profession = professionDao.findOne(id);
-        model.addAttribute("profession",profession);
-        List<Profession> professions = professionDao.findAll();
-        model.addAttribute("professions",professions);
-        return "editProfession";
-    }
 
-    @RequestMapping(value = {"/edit-{id}"})
-    public String edit(Model model,@PathVariable long id,
-                       @RequestParam("fee") int fee,
-                       @RequestParam("name") String nameProf,
-                       @RequestParam("action") String action,
-                       HttpServletRequest request) {
-        String url =  request.getRequestURL().toString() + "?" + request.getQueryString();
-        url.substring(url.indexOf("-"));
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(name);
-        model.addAttribute("user",user);
-        if(action.equals("save")) {
-            Profession profession = professionDao.findOne(id);
-            profession.setFee(fee);
-            profession.setName(nameProf);
-            professionDao.saveAndFlush(profession);
+    @RequestMapping(value = {"/saveWithoutName"}, method = RequestMethod.GET)
+    public String saveWithoutName(Model model, ModelMap modelMap,
+                                  @RequestParam(value = "fee") int fee,
+                                  @RequestParam(value = "action") String action) {
+        {
+            String name = SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userService.findByUsername(name);
+            model.addAttribute("user",user);
+            if(action.equals("save")){
+                Profession profession = new Profession();
+                profession.setFee(fee);
+                model.addAttribute("profession",profession);
+                return "addProfession";
+            }
+            else {
+                List<Profession> professions = professionDao.findAll();
+                model.addAttribute("professions",professions);
+                return "redirect:/change";
+            }
         }
-        List<Profession> professions = professionDao.findAll();
-        model.addAttribute("professions",professions);
-        return "redirect:/welcome";
     }
 
-
-    @RequestMapping(value = {"/add"}, method = RequestMethod.GET)
-    public String add(Model model) {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(name);
-        model.addAttribute("user",user);
-        return "addProfession";
-    }
-
-    @RequestMapping(value = {"/save"}, method = RequestMethod.GET)
-    public String save(Model model, ModelMap modelMap, @RequestParam(value = "name") String pName,
-                       @RequestParam(value = "fee") int fee,
-                       @RequestParam(value = "action") String action) {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(name);
-        model.addAttribute("user",user);
-        if(action.equals("save")){
-            Profession profession = new Profession();
-            profession.setName(pName);
-            profession.setFee(fee);
-            professionDao.save(profession);
+    @RequestMapping(value = {"/saveWithoutFee"}, method = RequestMethod.GET)
+    public String saveWithoutName(Model model, ModelMap modelMap,
+                                  @RequestParam(value = "name", required = false, defaultValue = "10") String pName,
+                                  @RequestParam(value = "action", required = false, defaultValue = "10") String action) {
+        {
+            String name = SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userService.findByUsername(name);
+            model.addAttribute("user",user);
+            if(action.equals("save")){
+                Profession profession = new Profession();
+                profession.setName(pName);
+                model.addAttribute("profession",profession);
+                return "addProfession";
+            }
+            else {
+                List<Profession> professions = professionDao.findAll();
+                model.addAttribute("professions",professions);
+                return "redirect:/change";
+            }
         }
-        List<Profession> professions = professionDao.findAll();
-        model.addAttribute("professions",professions);
-        return "redirect:/change";
     }
 
     @RequestMapping(value = {"/change"}, method = RequestMethod.GET)

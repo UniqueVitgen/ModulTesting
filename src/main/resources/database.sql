@@ -35,6 +35,14 @@ CREATE TABLE professions (
 )
   ENGINE = InnoDB;
 
+CREATE TABLE cats (
+  id   INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  color VARCHAR(100) NOT NULL,
+  kg DOUBLE NOT NULL 
+)
+  ENGINE = InnoDB;
+
 -- Insert data
 # insert into professions values(1,'builder',1000);
 

@@ -22,6 +22,8 @@
 
 <div class="container">
 
+    <%@page pageEncoding="UTF-8"%>
+    <%request.setCharacterEncoding("UTF-8");%>
     <c:if test="${pageContext.request.userPrincipal.name != null}">
         <form id="logoutForm" method="POST" action="${contextPath}/logout">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -36,7 +38,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="<c:url value='/welcome' />">Profile</a>
+                    <a class="navbar-brand" href="<c:url value='/welcome' />">Профиль</a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -44,42 +46,88 @@
                     <ul class="nav navbar-nav">
                     </ul>
                     <form class="nav navbar-nav navbar-centr">
-                        <li><a href="<c:url value='/welcome' />">Welcome ${pageContext.request.userPrincipal.name}</a></li>
+                        <li><a href="<c:url value='/welcome' />">Приветсвуем ${pageContext.request.userPrincipal.name}</a></li>
                         <c:forEach var="role" items="${user.roles}">
                             <c:if test="${role.id == 1}">
-                                <li><a href="<c:url value='/statistics' />">Statistics</a></li>
+                                <li><a href="<c:url value='/statistics' />">Статистика профессий</a></li>
                             </c:if>
                         </c:forEach>
                         <c:forEach var="role" items="${user.roles}">
                             <c:if test="${role.id == 2}">
-                                <li><a href="<c:url value='/change' />">Statistics</a></li>
+                                <li><a href="<c:url value='/change' />">Настройка профессий</a></li>
                             </c:if>
                         </c:forEach>
                     </form>
                     <ul class="nav navbar-nav navbar-right">
 
                         <li>
-                            <a href="#" onclick="document.forms['logoutForm'].submit()">Logout</a>
+                            <a href="#" onclick="document.forms['logoutForm'].submit()">Выход</a>
                         </li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
-
     </c:if>
     <form action="/edit-${index}">
         <table class = "table" id = "profile">
+
+            <c:if test='${profession.name.equals("empty") || profession.name == null}'>
+                <tr>
+                    <td><span style="align:right" class="label label-default">Название:</span></td>
+                    <td><input type = "text" name = "name"></td>
+                </tr>
+            </c:if>
+            <c:if test='${!(profession.name.equals("empty") || profession.name == null)}'>
+                <tr>
+                    <td><span style="align:right" class="label label-default">Название:</span></td>
+                    <td><input type = "text" name = "name" value="${profession.name}"></td>
+                </tr>
+            </c:if>
+
+
+            <c:if test="${emptyName != null}">
             <tr>
-                <td><span style="align:right" class="label label-default">Name:</span></td>
-                <td><input type = "text" value="${profession.name}" name = "name"></td>
+                <td></td>
+                <td><span style="align:center;color:red">${emptyName}</span></td>
             </tr>
+            </c:if>
+
+            <c:if test="${badSizeName != null}">
             <tr>
-                <td><span style="align:right" class="label label-default">fee:</span></td>
-                <td><input type="number" value="${profession.fee}" name="fee" id=""></td>
+                <td></td>
+                <td><span style="align:center;color:red">${badSizeName}</span></td>
             </tr>
+            </c:if>
+            <c:if test="${badSymbolsName != null}">
+            <tr>
+                <td></td>
+                <td><span style="align:center;color:red">${badSymbolsName}</span></td>
+            </tr>
+            </c:if>
+            <c:if test="${profession.fee != -1 && profession.fee != 0}">
+                <tr>
+                    <td><span style="align:right" class="label label-default">Заработная плата:</span></td>
+                    <td><input type="number" name="fee" value="${profession.fee}"></td>
+                </tr>
+            </c:if>
+            <c:if test="${!(profession.fee != -1 && profession.fee != 0)}">
+                <tr>
+                    <td><span style="align:right" class="label label-default">Заработная плата:</span></td>
+                    <td><input type="number" name="fee"></td>
+                </tr>
+            </c:if>
+
+            <c:if test="${emptyFee != null}">
+                <tr>
+                <td></td>
+                <td><span style="align:center;color:red">${emptyFee}</span></td>
+                </tr>
+            </c:if>
+            <td style="align:right">
+                <input style="width: 100%"  type="submit" name="action" class="button btn btn-success" value="save" /></td>
+            <td>
+                <input style="width: 100%" type="submit" name="action" class="button btn btn-danger" value="cancel" /></td>
         </table>
-        <input type="submit" name="action" class="button btn btn-success" value="save" />
-        <input type="submit" name="action" class="button btn btn-danger" value="cancel" />
     </form>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
