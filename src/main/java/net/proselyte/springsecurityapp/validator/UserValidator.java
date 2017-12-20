@@ -67,7 +67,7 @@ public class UserValidator implements Validator {
     }
 
     public void validateProfession(Model model, String name, int fee, Profession profession) {
-        if(name.equals("empty")) {
+        if(name.equals("empty") || name.equals("")) {
             model.addAttribute("emptyName","Укажите Название профессии");
         }
         else {
@@ -75,11 +75,12 @@ public class UserValidator implements Validator {
             if (name.length() < 2 || name.length() > 32) {
                 model.addAttribute("badSizeName","Название должно содержать от 2 до 32 символов");
             }
-            if(!name.matches("^[a-zA-Zа-яА-Я]{2,32}$")){
+            if(!name.matches("^[a-zA-Zа-яА-Я]{0,}$")){
                 model.addAttribute("badSymbolsName","Название должно содержать русские и латинские символы");
             }
         }
         if(fee == -1) {
+            profession.setFee(fee);
             model.addAttribute("emptyFee","Укажите Заработную плату");
         }
         else {

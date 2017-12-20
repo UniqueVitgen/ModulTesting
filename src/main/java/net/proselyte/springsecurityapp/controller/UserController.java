@@ -85,9 +85,10 @@ public class UserController {
         if (error != null) {
             model.addAttribute("error", "Логин или пароль введены не верно.");
         }
-
-        if (logout != null) {
-            model.addAttribute("message", "Успешный выход.");
+        else {
+            if (logout != null) {
+                model.addAttribute("message", "Успешный выход.");
+            }
         }
 
         return "login";
@@ -111,52 +112,6 @@ public class UserController {
         return "statistics";
     }
 
-
-
-    @RequestMapping(value = {"/saveWithoutName"}, method = RequestMethod.GET)
-    public String saveWithoutName(Model model, ModelMap modelMap,
-                                  @RequestParam(value = "fee") int fee,
-                                  @RequestParam(value = "action") String action) {
-        {
-            String name = SecurityContextHolder.getContext().getAuthentication().getName();
-            User user = userService.findByUsername(name);
-            model.addAttribute("user",user);
-            if(action.equals("save")){
-                Profession profession = new Profession();
-                profession.setFee(fee);
-                model.addAttribute("profession",profession);
-                return "addProfession";
-            }
-            else {
-                List<Profession> professions = professionDao.findAll();
-                model.addAttribute("professions",professions);
-                return "redirect:/change";
-            }
-        }
-    }
-
-    @RequestMapping(value = {"/saveWithoutFee"}, method = RequestMethod.GET)
-    public String saveWithoutName(Model model, ModelMap modelMap,
-                                  @RequestParam(value = "name", required = false, defaultValue = "10") String pName,
-                                  @RequestParam(value = "action", required = false, defaultValue = "10") String action) {
-        {
-            String name = SecurityContextHolder.getContext().getAuthentication().getName();
-            User user = userService.findByUsername(name);
-            model.addAttribute("user",user);
-            if(action.equals("save")){
-                Profession profession = new Profession();
-                profession.setName(pName);
-                model.addAttribute("profession",profession);
-                return "addProfession";
-            }
-            else {
-                List<Profession> professions = professionDao.findAll();
-                model.addAttribute("professions",professions);
-                return "redirect:/change";
-            }
-        }
-    }
-
     @RequestMapping(value = {"/change"}, method = RequestMethod.GET)
     public String change(Model model) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -167,10 +122,4 @@ public class UserController {
         return "changeProfession";
     }
 
-
-
-    @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public String admin(Model model) {
-        return "admin";
-    }
 }

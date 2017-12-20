@@ -1,0 +1,4 @@
+<dataset>
+    <professions id="1" name="BoyMan" fee="300"/>
+    <professions id="2" name="Miner" fee="320"/>
+</dataset>

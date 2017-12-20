@@ -5,6 +5,7 @@ import net.proselyte.springsecurityapp.dao.ProfessionDao;
 import net.proselyte.springsecurityapp.model.HistoryProfession;
 import net.proselyte.springsecurityapp.model.Profession;
 import net.proselyte.springsecurityapp.model.User;
+import net.proselyte.springsecurityapp.service.ProfessionService;
 import net.proselyte.springsecurityapp.service.UserService;
 import net.proselyte.springsecurityapp.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class ProfessionController {
     private ProfessionDao professionDao;
 
     @Autowired
+    private ProfessionService professionService;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -38,6 +42,7 @@ public class ProfessionController {
     @Autowired
     private UserValidator userValidator;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = {"/delete-{id}"}, method = RequestMethod.GET)
     public String delete(@PathVariable("id") long id, Model model) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -46,7 +51,7 @@ public class ProfessionController {
         professionDao.delete(id);
         List<Profession> professions = professionDao.findAll();
         model.addAttribute("professions",professions);
-        return "changeProfession";
+        return "redirect:/change";
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -81,6 +86,7 @@ public class ProfessionController {
         return "historyProfession";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = {"/edit-{id}"})
     public String edit(Model model,@PathVariable long id,
                        @RequestParam("fee") int fee,
@@ -95,13 +101,13 @@ public class ProfessionController {
         if(action.equals("save")) {
             Profession profession = professionDao.findOne(id);
             userValidator.validateProfession(model,nameProf,fee,profession);
-            if(fee == -1) {
-                profession.setFee(fee);
-                model.addAttribute("emptyFee","Укажите Заработную плату");
-            }
-            else {
-                profession.setFee(fee);
-            }
+//            if(fee == -1) {
+//                profession.setFee(fee);
+//                model.addAttribute("emptyFee","Укажите Заработную плату");
+//            }
+//            else {
+//                profession.setFee(fee);
+//            }
             model.addAttribute("profession",profession);
             if(model.containsAttribute("emptyName") ||
                     model.containsAttribute("emptyFee") ||
@@ -109,7 +115,7 @@ public class ProfessionController {
                     model.containsAttribute("badSymbolsName")
                     )
             {
-                return "addProfession";
+                return "editProfession";
             }
             profession.setFee(fee);
             profession.setName(nameProf);
@@ -121,6 +127,7 @@ public class ProfessionController {
     }
 
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = {"/add"}, method = RequestMethod.GET)
     public String add(Model model) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -129,6 +136,7 @@ public class ProfessionController {
         return "addProfession";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = {"/save"}, method = RequestMethod.GET)
     public String save(Model model, ModelMap modelMap, @RequestParam(value = "name", required = false, defaultValue = "empty") String pName,
                        @RequestParam(value = "fee", required = false, defaultValue = "-1") int fee,

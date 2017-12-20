@@ -19,10 +19,13 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.ui.ExtendedModelMap;
+import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import java.util.HashSet;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -60,6 +63,125 @@ public class ValidationTest {
     @After
     public void TearDown(){
 
+    }
+
+    @Test
+    public void validateProfession_checkEmptyName_ReturnInvalid(){
+        Model model =new ExtendedModelMap();
+        Profession profession = new Profession();
+        int fee = 200;
+        String name = "";
+        userValidator.validateProfession(model,name,fee,profession);
+        boolean expect = model.containsAttribute("emptyName") && model.asMap().size() == 1;
+        assertTrue(expect);
+    }
+
+    @Test
+    public void validateProfession_checkEmptyNameAndEmptyFee_ReturnInvalid(){
+        Model model =new ExtendedModelMap();
+        Profession profession = new Profession();
+        int fee = -1;
+        System.out.println(fee);
+        String name = "";
+        userValidator.validateProfession(model,name,fee,profession);
+        boolean expect = model.containsAttribute("emptyName")
+                && model.asMap().size() == 2
+                && model.containsAttribute("emptyFee");
+        assertTrue(expect);
+    }
+
+    @Test
+    public void validateProfession_checkBackSymbolsName_ReturnInvalid(){
+        Model model =new ExtendedModelMap();
+        Profession profession = new Profession();
+        int fee = 200;
+        System.out.println(fee);
+        String name = "22";
+        userValidator.validateProfession(model,name,fee,profession);
+        boolean expect = model.containsAttribute("badSymbolsName")
+                && model.asMap().size() == 1;
+        assertTrue(expect);
+    }
+
+    @Test
+    public void validateProfession_checkBackSymbolsNameAndEmptyFee_ReturnInvalid(){
+        Model model =new ExtendedModelMap();
+        Profession profession = new Profession();
+        int fee = -1;
+        System.out.println(fee);
+        String name = "22";
+        userValidator.validateProfession(model,name,fee,profession);
+        boolean expect = model.containsAttribute("badSymbolsName")
+                && model.asMap().size() == 2
+                && model.containsAttribute("emptyFee");
+        assertTrue(expect);
+    }
+
+    @Test
+    public void validateProfession_checkValidation_ReturnSuccess(){
+        Model model =new ExtendedModelMap();
+        Profession profession = new Profession();
+        int fee = 200;
+        System.out.println(fee);
+        String name = "ab";
+        userValidator.validateProfession(model,name,fee,profession);
+        boolean expect = model.asMap().size() == 0;
+        assertTrue(expect);
+    }
+
+    @Test
+    public void validateProfession_emptyFee_ReturnInvalid(){
+        Model model =new ExtendedModelMap();
+        Profession profession = new Profession();
+        int fee = -1;
+        System.out.println(fee);
+        String name = "ab";
+        userValidator.validateProfession(model,name,fee,profession);
+        boolean expect = model.asMap().size() == 1
+                && model.containsAttribute("emptyFee");
+        assertTrue(expect);
+    }
+
+    @Test
+    public void validateProfession_badSizeNameAndbadSymbolsNameAndEmptyFee_ReturnInvalid(){
+        Model model =new ExtendedModelMap();
+        Profession profession = new Profession();
+        int fee = -1;
+        System.out.println(fee);
+        String name = "1";
+        userValidator.validateProfession(model,name,fee,profession);
+        boolean expect = model.asMap().size() == 3
+                && model.containsAttribute("emptyFee")
+                && model.containsAttribute("badSymbolsName")
+                && model.containsAttribute("badSizeName");
+        assertTrue(expect);
+    }
+
+    @Test
+    public void validateProfession_badSizeName_ReturnInvalid(){
+        Model model =new ExtendedModelMap();
+        Profession profession = new Profession();
+        int fee = 200;
+        System.out.println(fee);
+        String name = "а";
+        userValidator.validateProfession(model,name,fee,profession);
+        boolean expect = model.asMap().size() == 1
+                && model.containsAttribute("badSizeName");
+        assertTrue(expect);
+    }
+
+    @Test
+    public void validateProfession_badSizeNameAndEmptyFee_ReturnInvalid(){
+        Model model =new ExtendedModelMap();
+        Profession profession = new Profession();
+        int fee = -1;
+        System.out.println(fee);
+        String name = "а";
+        userValidator.validateProfession(model,name,fee,profession);
+        boolean expect = model.asMap().size() == 2
+                && model.containsAttribute("emptyFee")
+                && model.containsAttribute("badSizeName");
+        assertTrue(expect);
     }
 
     @Test

@@ -58,57 +58,15 @@ public class UserServiceTest {
         userDao.delete(user);
     }
 
+
     @Test
-    public void findByUsernameOrId_checkFindByUsername_ReturnsTrue(){
-        User user1 = userService.findByUsername("username1990");
-        System.out.println(userService.findByUsernameOrId("username1990",0));
-        assertEquals(user1.getId(),userService.findByUsernameOrId("username1990",0).getId());
-//        assertNotNull(userService.findByUsernameOrId("username1990",0));
+    public void save_testSave_ReturnTrue() {
+
     }
 
     @Test
-    public void findByUsernameOrId_checkFindById_ReturnsTrue(){
-        User user1 = userService.findByUsernameOrId("user",2);
-        System.out.println(userService.findByUsernameOrId("username1990",0));
-        assertEquals(user1.getId(),userService.findByUsername("vitalors1997").getId());
-//        assertNotNull(userService.findByUsernameOrId("username1990",0));
+    public void findByUsername_testFindByUsername_ReturnUser() {
+        User findedUser = userService.findByUsername("username1990");
+        assertEquals(findedUser.getUsername(), user.getUsername());
     }
-
-    @Test
-    public void findByFirstNameOrLastName_checkFindByFirstName_ReturnTrue(){
-        User user1 = userService.findByFirstNameOrLastName("user","21");
-        System.out.println(user1.getFirstname());
-        System.out.println(user.getFirstname());
-        Assert.assertEquals(user1.getFirstname(),user.getFirstname());
-    }
-
-    @Test
-    public void findByFirstNameOrLastName_checkFindByLastName_ReturnTrue(){
-        User user1 = userService.findByFirstNameOrLastName("user5","Orsik");
-        System.out.println(user1.getFirstname());
-        System.out.println(user.getFirstname());
-        Assert.assertNotEquals(user1.getLastname(),user.getFirstname());
-        Assert.assertEquals(user1.getLastname(),userService.findByUsernameOrId("234",4).getLastname());
-    }
-
-
-//    @Test
-//    public void findByUsername_checkFindByUsername_ReturnsTrue(){
-//        User user1 = userService.findByUsername(user.getUsername());
-//        assertEquals(user1.getUsername(),user.getUsername());
-//        assertEquals(user1.getFirstname(),user.getFirstname());
-//        assertEquals(user1.getLastname(),user.getLastname());
-//        assertEquals(user1.getId(),user.getId());
-//        assertEquals(user1.getProfession(),user.getProfession());
-//    }
-//
-//    @Test
-//    public void save_checkSavingUser_ReturnsTrue(){
-//        User user1 = userService.findByUsername(user.getUsername());
-//        assertEquals(user1.getUsername(),user.getUsername());
-//        assertEquals(user1.getFirstname(),user.getFirstname());
-//        assertEquals(user1.getLastname(),user.getLastname());
-//        assertEquals(user1.getId(),user.getId());
-//        assertEquals(user1.getProfession(),user.getProfession());
-//    }
 }

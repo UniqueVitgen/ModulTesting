@@ -14,8 +14,4 @@ public interface UserService {
     void save(User user);
 
     User findByUsername(String username);
-
-    public User findByUsernameOrId(String username, long id);
-
-    public User findByFirstNameOrLastName(String firstname, String lastname);
 }
